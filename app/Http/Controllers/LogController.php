@@ -35,15 +35,15 @@ class LogController extends Controller
      */
     public function readFileIUpload(Request $request): View|Factory|Application
     {
-        $file = $request->file;
-        $dataLogFile = file($file);
+        $inputFile = $request->file;
+        $dataLogFile = file($inputFile);
 
-        $objCountLogs = $this->logService->countLogs($file, $dataLogFile);
-        $objFileInfo = $this->logService->getFileInfo($file);
+        $countLogs = $this->logService->countLogs($inputFile, $dataLogFile);
+        $file = $this->logService->getInfoFile($inputFile);
 
         return view('log', [
-            'data' => $objCountLogs,
-            'fileInfo' => $objFileInfo
+            'data' => $countLogs,
+            'file' => $file
         ]);
     }
 }

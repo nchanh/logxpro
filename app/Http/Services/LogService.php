@@ -11,7 +11,6 @@ class LogService
         $logMatches = $this->getLogMatches($file);
 
         $arrLogs = [];
-
         $logTemp = new stdClass();
         $logTemp->log_info = [];
         $logTemp->log_text = '';
@@ -68,13 +67,13 @@ class LogService
         return $logs;
     }
 
-    public function countLogs($file, $dataLogFile): object
+    public function countLogs($inputFile, $dataLogFile): object
     {
-        $arrLogs = $this->getAllLogs($file, $dataLogFile);
-        $objCountLogs = new stdClass();
-        $objCountLogs->requests = 0;
-        $objCountLogs->request_success = 0;
-        $objCountLogs->request_errors = 0;
+        $arrLogs = $this->getAllLogs($inputFile, $dataLogFile);
+        $countLogs = new stdClass();
+        $countLogs->requests = 0;
+        $countLogs->request_success = 0;
+        $countLogs->request_errors = 0;
 
         foreach ($arrLogs as $log) {
             $isRequestTitle = str_contains($log->log_text, "'title' => '");
@@ -83,30 +82,30 @@ class LogService
 
             // Count requests
             if ($isRequestTitle && ($isRequestSuccess || $isRequestError)) {
-                ++$objCountLogs->requests;
+                ++$countLogs->requests;
 
                 // Count request success
                 if ($isRequestSuccess) {
-                    ++$objCountLogs->request_success;
+                    ++$countLogs->request_success;
                 }
 
                 // Count request errors
                 if ($isRequestError) {
-                    ++$objCountLogs->request_errors;
+                    ++$countLogs->request_errors;
                 }
             }
         }
 
-        return $objCountLogs;
+        return $countLogs;
     }
 
-    public function getFileInfo($file): object
+    public function getInfoFile($inputFile): object
     {
-        $objFileInfo = new stdClass();
-        $objFileInfo->file_name = $file->getClientOriginalName();
-        $objFileInfo->file_size = $this->filesizeFormatted($file->getSize());
+        $file = new stdClass();
+        $file->name = $inputFile->getClientOriginalName();
+        $file->file_size = $this->filesizeFormatted($inputFile->getSize());
 
-        return $objFileInfo;
+        return $file;
     }
 
     private function filesizeFormatted($bytes): string
