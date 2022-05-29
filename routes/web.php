@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/log', [LogController::class, 'index'])->name('log.index');
+Route::post('/log/upload', [LogController::class, 'readFileIUpload'])->name('log.upload');
