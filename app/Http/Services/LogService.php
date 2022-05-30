@@ -131,7 +131,7 @@ class LogService
     {
         $file = new stdClass();
         $file->name = $inputFile->getClientOriginalName();
-        $file->file_size = $this->filesizeFormatted($inputFile->getSize());
+        $file->size = $this->filesizeFormatted($inputFile->getSize());
 
         return $file;
     }

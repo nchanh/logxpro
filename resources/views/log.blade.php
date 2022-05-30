@@ -23,13 +23,13 @@
         <form action="{{ route('log.upload') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            @isset($fileInfo)
+            @isset($file)
                 <div class="form-group">
-                    <span>File name: {{ $fileInfo->file_name }}</span>
+                    <span>File name: {{ $file->name }}</span>
                 </div>
 
                 <div class="form-group mb-2">
-                    <span>File size: {{ $fileInfo->file_size }}</span>
+                    <span>File size: {{ $file->size }}</span>
                 </div>
             @endisset
 
