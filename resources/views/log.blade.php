@@ -34,7 +34,7 @@
             @endisset
 
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <input type="file" name="file" class="form-control">
                 </div>
 
@@ -50,13 +50,43 @@
             <div class="form-group">
                 <h5>Request statistics:</h5>
             </div>
-            <ul class="list-group list-group-flush">
+            <ul class="list-group list-group-flush mb-4">
                 <li class="list-group-item">Requests: {{ number_format($data->requests , 0, ',', '.') }}</li>
                 <li class="list-group-item">Request
                     success: {{ number_format($data->request_success , 0, ',', '.') }}</li>
                 <li class="list-group-item">Request
                     errors: {{ number_format($data->request_errors , 0, ',', '.') }}</li>
             </ul>
+
+            <div class="form-group">
+                <h5>Request statistics users:</h5>
+            </div>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                @foreach($data->request_users as $key => $user)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading-{{ $key }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapse-{{ $key }}" aria-expanded="false"
+                                    aria-controls="flush-collapse-{{ $key }}">
+                                <span class="badge bg-primary">{{ $user->all }}</span>&nbsp;
+                                <span class="badge bg-success">{{ $user->success }}</span>&nbsp;
+                                <span class="badge bg-danger">{{ $user->errors }}</span>&ensp;
+                                <span>{{ $key }}</span>
+                            </button>
+                        </h2>
+                        <div id="flush-collapse-{{ $key }}" class="accordion-collapse collapse"
+                             aria-labelledby="flush-heading-{{ $key }}" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <b>{{ $key }}</b> <br>
+                                Requests&emsp;&emsp;&emsp;&emsp;: <code>{{ $user->all }}</code> <br>
+                                Request success&ensp;: <code>{{ $user->success }}</code> <br>
+                                Request errors&emsp;&ensp;: <code>{{ $user->errors }}</code>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
         </div>
     @endisset
 

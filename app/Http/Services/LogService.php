@@ -70,15 +70,19 @@ class LogService
     public function countLogs($inputFile, $dataLogFile): object
     {
         $arrLogs = $this->getAllLogs($inputFile, $dataLogFile);
+        $users = $this->getUserLogs($arrLogs);
         $countLogs = new stdClass();
         $countLogs->requests = 0;
         $countLogs->request_success = 0;
         $countLogs->request_errors = 0;
+        $countLogs->request_users = [];
 
         foreach ($arrLogs as $log) {
-            $isRequestTitle = str_contains($log->log_text, "'title' => '");
-            $isRequestSuccess = str_contains($log->log_info['format'], 'production.INFO:');
-            $isRequestError = str_contains($log->log_info['format'], 'production.ERROR:');
+            $logText = $log->log_text;
+            $logInfo = $log->log_info;
+            $isRequestTitle = str_contains($logText, "'title' => '");
+            $isRequestSuccess = str_contains($logInfo['format'], 'production.INFO:');
+            $isRequestError = str_contains($logInfo['format'], 'production.ERROR:');
 
             // Count requests
             if ($isRequestTitle && ($isRequestSuccess || $isRequestError)) {
@@ -93,8 +97,32 @@ class LogService
                 if ($isRequestError) {
                     ++$countLogs->request_errors;
                 }
+
+                // Count request users
+                $userId = $this->userMatchInLog($users, $logText);
+                if ($userId !== '') {
+                    if (!array_key_exists($userId, $countLogs->request_users)) {
+                        $countLogs->request_users["${userId}"] = new stdClass();
+                        $countLogs->request_users["${userId}"]->all = 0;
+                        $countLogs->request_users["${userId}"]->success = 0;
+                        $countLogs->request_users["${userId}"]->errors = 0;
+                    }
+
+                    ++$countLogs->request_users["${userId}"]->all;
+
+                    if ($isRequestSuccess) {
+                        ++$countLogs->request_users["${userId}"]->success;
+                    }
+
+                    if ($isRequestError) {
+                        ++$countLogs->request_users["${userId}"]->errors;
+                    }
+                }
             }
         }
+
+        // Sort request users
+        arsort($countLogs->request_users);
 
         return $countLogs;
     }
@@ -125,5 +153,56 @@ class LogService
         }
 
         return $bytes;
+    }
+
+    public function getUserLogs($arrLogs): array
+    {
+        $users = [];
+        $lengthTitleUser = 11;
+        $lengthTitleUserId = 14;
+        $logTitleUser = "'user' => '";
+        $logTitleUserId = "'user_id' => '";
+
+        foreach ($arrLogs as $log) {
+            $logText = $log->log_text;
+            $isUser = str_contains($logText, $logTitleUser);
+            $isUserId = str_contains($logText, $logTitleUserId);
+            $userId = '';
+
+            if ($isUser) {
+                $userId = $this->getUserLog($logText, $logTitleUser, $lengthTitleUser);
+            }
+
+            if ($isUserId) {
+                $userId = $this->getUserLog($logText, $logTitleUserId, $lengthTitleUserId);
+            }
+
+            if (str_contains($userId, '-')) {
+                $users[] = $userId;
+            }
+        }
+
+        return array_unique($users);
+    }
+
+    private function getUserLog($logText, $logTitleUser, $lengthTitleUser): string
+    {
+        $startLengthUser = strpos($logText, $logTitleUser) + $lengthTitleUser;
+        $stringSubUser = substr($logText, $startLengthUser);
+        $endLengthUser = strpos($stringSubUser, "',");
+
+        return substr($logText, $startLengthUser, $endLengthUser);
+    }
+
+    private function userMatchInLog($users, $logText) {
+        $userId = '';
+        foreach ($users as $user) {
+            if (str_contains($logText, $user)) {
+                $userId = $user;
+                break;
+            }
+        }
+
+        return $userId;
     }
 }
