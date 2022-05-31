@@ -51,11 +51,24 @@
                 <h5>Request statistics:</h5>
             </div>
             <ul class="list-group list-group-flush mb-4">
-                <li class="list-group-item">Requests: {{ number_format($data->requests , 0, ',', '.') }}</li>
-                <li class="list-group-item">Request
-                    success: {{ number_format($data->request_success , 0, ',', '.') }}</li>
-                <li class="list-group-item">Request
-                    errors: {{ number_format($data->request_errors , 0, ',', '.') }}</li>
+                <li class="list-group-item">
+                    Requests&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;:&ensp;{{ number_format($data->requests , 0, ',', '.') }}
+                </li>
+                <li class="list-group-item">
+                    Request success&emsp;&emsp;&nbsp;:&ensp;{{ number_format($data->request_success , 0, ',', '.') }}
+                </li>
+                <li class="list-group-item">
+                    Request errors&emsp;&emsp;&emsp;&nbsp;:&ensp;{{ number_format($data->request_errors , 0, ',', '.') }}
+                </li>
+                <li class="list-group-item">
+                    Request token error&emsp;:&ensp;{{ number_format($data->request_token_errors , 0, ',', '.') }}
+                </li>
+                <li class="list-group-item">
+                    Request slow query&ensp;&nbsp;&nbsp;&nbsp;:&ensp;{{ number_format($data->request_slow_query , 0, ',', '.') }}
+                </li>
+                <li class="list-group-item">
+                    Request timeout&emsp;&emsp;&nbsp;&nbsp;&nbsp;:&ensp;{{ number_format($data->request_time_out , 0, ',', '.') }}
+                </li>
             </ul>
 
             <div class="form-group">
@@ -80,7 +93,10 @@
                                 <b>{{ $key }}</b> <br>
                                 Requests&emsp;&emsp;&emsp;&emsp;: <code>{{ $user->all }}</code> <br>
                                 Request success&ensp;: <code>{{ $user->success }}</code> <br>
-                                Request errors&emsp;&ensp;: <code>{{ $user->errors }}</code>
+                                Request errors&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <code>{{ $user->errors }}</code> <br>
+                                Request web&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <code>{{ $user->web }}</code> <br>
+                                Request iOS&emsp;&emsp;&ensp;&nbsp;: <code>{{ $user->ios }}</code> <br>
+                                Request Android&ensp;&nbsp;: <code>{{ $user->android }}</code>
                             </div>
                         </div>
                     </div>
