@@ -75,49 +75,97 @@ class LogService
         $countLogs->requests = 0;
         $countLogs->request_success = 0;
         $countLogs->request_errors = 0;
+        $countLogs->request_token_errors = 0;
+        $countLogs->request_slow_query = 0;
+        $countLogs->request_time_out = 0;
         $countLogs->request_users = [];
+        $countLogs->request_other = [];
 
         foreach ($arrLogs as $log) {
             $logText = $log->log_text;
             $logInfo = $log->log_info;
-            $isRequestTitle = str_contains($logText, "'title' => '");
+            $isRequestTitle = str_contains($logText, "'title' => '") ||
+                str_contains($logText, "'info' => '")  ||
+                str_contains($logText, "'user' => '")  ||
+                str_contains($logText, "'user_id' => '");
             $isRequestSuccess = str_contains($logInfo['format'], 'production.INFO:');
             $isRequestError = str_contains($logInfo['format'], 'production.ERROR:');
+            $isRequestTokenError = str_contains($logText, "'title' => 'TOKEN_ERROR'");
+            $isRequestSlowQuery = str_contains($logInfo['title'], "[SLOW QUERY]");
+            $isRequestTimeOut = str_contains($logText, "'MAX_EXECUTION_TIME_ERROR'");
 
             // Count requests
             if ($isRequestTitle && ($isRequestSuccess || $isRequestError)) {
                 ++$countLogs->requests;
 
-                // Count request success
                 if ($isRequestSuccess) {
                     ++$countLogs->request_success;
                 }
 
-                // Count request errors
                 if ($isRequestError) {
                     ++$countLogs->request_errors;
+                }
+
+                if ($isRequestTokenError) {
+                    ++$countLogs->request_token_errors;
+                }
+
+                if ($isRequestTimeOut) {
+                    ++$countLogs->request_time_out;
                 }
 
                 // Count request users
                 $userId = $this->userMatchInLog($users, $logText);
                 if ($userId !== '') {
                     if (!array_key_exists($userId, $countLogs->request_users)) {
-                        $countLogs->request_users["${userId}"] = new stdClass();
-                        $countLogs->request_users["${userId}"]->all = 0;
-                        $countLogs->request_users["${userId}"]->success = 0;
-                        $countLogs->request_users["${userId}"]->errors = 0;
+                        $countLogs->request_users[(string)$userId] = new stdClass();
+                        $countLogs->request_users[(string)$userId]->all = 0;
+                        $countLogs->request_users[(string)$userId]->success = 0;
+                        $countLogs->request_users[(string)$userId]->errors = 0;
+                        $countLogs->request_users[(string)$userId]->ios = 0;
+                        $countLogs->request_users[(string)$userId]->android = 0;
+                        $countLogs->request_users[(string)$userId]->web = 0;
                     }
 
-                    ++$countLogs->request_users["${userId}"]->all;
+                    ++$countLogs->request_users[(string)$userId]->all;
 
                     if ($isRequestSuccess) {
-                        ++$countLogs->request_users["${userId}"]->success;
+                        ++$countLogs->request_users[(string)$userId]->success;
                     }
 
                     if ($isRequestError) {
-                        ++$countLogs->request_users["${userId}"]->errors;
+                        ++$countLogs->request_users[(string)$userId]->errors;
+                    }
+
+                    if (str_contains($logText, "'user_agent' => '")) {
+                        ++$countLogs->request_users[(string)$userId]->web;
+                    }
+
+                    if (str_contains($logText, "'device' =>")) {
+                        if (str_contains($logText, "'os' => 'iOS'")) {
+                            ++$countLogs->request_users[(string)$userId]->ios;
+                        }
+
+                        if (str_contains($logText, "'os' => 'Android'")) {
+                            ++$countLogs->request_users[(string)$userId]->android;
+                        }
                     }
                 }
+            } else if ($isRequestSlowQuery) {
+                ++$countLogs->request_slow_query;
+            } else if (
+                !empty($logText) &&
+                !str_contains($logText, "The token has been blacklisted") &&
+                !str_contains($logText, "file_put_contents()") &&
+                !str_contains($logText, "Host: graph.microsoft.com") &&
+                !str_contains($logText, "Host: www.googleapis.com") &&
+                !str_contains($logText, "Tymon\JWTAuth\Http\Middleware\BaseMiddleware->checkForToken()") &&
+                !str_contains($logText, "Stack trace:") &&
+                !str_contains($logText, "[stacktrace]") &&
+                !str_contains($logText, "Tymon\JWTAuth\Manager->decode()")
+            ) {
+                $countLogs->request_other[] = $logText;
+
             }
         }
 
