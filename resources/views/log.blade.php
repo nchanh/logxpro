@@ -50,26 +50,64 @@
             <div class="form-group">
                 <h5>Request statistics:</h5>
             </div>
-            <ul class="list-group list-group-flush mb-4">
-                <li class="list-group-item">
-                    Requests&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;:&ensp;{{ number_format($data->requests , 0, ',', '.') }}
-                </li>
-                <li class="list-group-item">
-                    Request success&emsp;&emsp;&nbsp;:&ensp;{{ number_format($data->request_success , 0, ',', '.') }}
-                </li>
-                <li class="list-group-item">
-                    Request errors&emsp;&emsp;&emsp;&nbsp;:&ensp;{{ number_format($data->request_errors , 0, ',', '.') }}
-                </li>
-                <li class="list-group-item">
-                    Request token error&emsp;:&ensp;{{ number_format($data->request_token_errors , 0, ',', '.') }}
-                </li>
-                <li class="list-group-item">
-                    Request slow query&ensp;&nbsp;&nbsp;&nbsp;:&ensp;{{ number_format($data->request_slow_query , 0, ',', '.') }}
-                </li>
-                <li class="list-group-item">
-                    Request timeout&emsp;&emsp;&nbsp;&nbsp;&nbsp;:&ensp;{{ number_format($data->request_time_out , 0, ',', '.') }}
-                </li>
-            </ul>
+                <table class="mb-4">
+                    <tr>
+                        <td>Requests </td>
+                        <td>: {{ number_format($data->requests , 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Request success </td>
+                        <td>: {{ number_format($data->request_success , 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Request errors </td>
+                        <td>: {{ number_format($data->request_errors , 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Request token error </td>
+                        <td>: {{ number_format($data->request_token_errors , 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Request slow query </td>
+                        <td>: {{ number_format($data->request_slow_query , 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Request timeout </td>
+                        <td>: {{ number_format($data->request_time_out , 0, ',', '.') }}</td>
+                    </tr>
+                </table>
+
+{{--            <p>--}}
+{{--                <a class="btn btn-primary" data-bs-toggle="collapse3" href="#collapseExampleOther" role="button" aria-expanded="false" aria-controls="collapseExampleOther">--}}
+{{--                    Show log other--}}
+{{--                </a>--}}
+{{--            </p>--}}
+{{--            <div class="collapse3" id="collapseExampleOther">--}}
+{{--                aa--}}
+{{--                <ul class="list-group">--}}
+{{--                    @foreach($data->request_other as $key => $item)--}}
+{{--                        <li class="list-group-item">--}}
+{{--                            {{ $item }}--}}
+{{--                        </li>--}}
+{{--                    @endforeach--}}
+{{--                </ul>--}}
+{{--            </div>--}}
+
+            <p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Button with data-bs-target
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <ul class="list-group">
+                    @foreach($data->request_other as $key => $item)
+                        <li class="list-group-item">
+                            {{ $item }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
 
             <div class="form-group">
                 <h5>Request statistics users:</h5>
@@ -91,12 +129,32 @@
                              aria-labelledby="flush-heading-{{ $key }}" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <b>{{ $key }}</b> <br>
-                                Requests&emsp;&emsp;&emsp;&emsp;: <code>{{ $user->all }}</code> <br>
-                                Request success&ensp;: <code>{{ $user->success }}</code> <br>
-                                Request errors&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <code>{{ $user->errors }}</code> <br>
-                                Request web&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <code>{{ $user->web }}</code> <br>
-                                Request iOS&emsp;&emsp;&ensp;&nbsp;: <code>{{ $user->ios }}</code> <br>
-                                Request Android&ensp;&nbsp;: <code>{{ $user->android }}</code>
+                                <table>
+                                    <tr>
+                                        <td>Requests </td>
+                                        <td>: <code>{{ $user->all }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Request success </td>
+                                        <td>: <code>{{ $user->success }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Request errors </td>
+                                        <td>: <code>{{ $user->errors }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Request web </td>
+                                        <td>: <code>{{ $user->web }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Request iOS </td>
+                                        <td>: <code>{{ $user->ios }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Request Android </td>
+                                        <td>: <code>{{ $user->android }}</code></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>

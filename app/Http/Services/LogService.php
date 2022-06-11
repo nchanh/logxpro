@@ -92,7 +92,7 @@ class LogService
             $isRequestError = str_contains($logInfo['format'], 'production.ERROR:');
             $isRequestTokenError = str_contains($logText, "'title' => 'TOKEN_ERROR'");
             $isRequestSlowQuery = str_contains($logInfo['title'], "[SLOW QUERY]");
-            $isRequestTimeOut = str_contains($logText, "'MAX_EXECUTION_TIME_ERROR'");
+            $isRequestTimeOut = str_contains($logText, "'MAX_EXECUTION_TIME_ERROR'") || str_contains($logText, "'MAX EXECUTION TIME ERROR'");
 
             // Count requests
             if ($isRequestTitle && ($isRequestSuccess || $isRequestError)) {
