@@ -22,7 +22,7 @@ class LogController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index(): View|Factory|Application
+    public function index()
     {
         return view('log');
     }
@@ -33,7 +33,7 @@ class LogController extends Controller
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function readFileIUpload(Request $request): View|Factory|Application
+    public function readFileIUpload(Request $request)
     {
         $inputFile = $request->file;
         $dataLogFile = file($inputFile);

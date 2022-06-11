@@ -1,3 +1,3 @@
 ## logxpro
-## PHP 8.0 - 8.1
-## Laravel 9
+## PHP ^7.4 | ^8.0
+## Laravel 8
