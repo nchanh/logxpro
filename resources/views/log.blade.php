@@ -77,26 +77,13 @@
                     </tr>
                 </table>
 
-{{--            <p>--}}
-{{--                <a class="btn btn-primary" data-bs-toggle="collapse3" href="#collapseExampleOther" role="button" aria-expanded="false" aria-controls="collapseExampleOther">--}}
-{{--                    Show log other--}}
-{{--                </a>--}}
-{{--            </p>--}}
-{{--            <div class="collapse3" id="collapseExampleOther">--}}
-{{--                aa--}}
-{{--                <ul class="list-group">--}}
-{{--                    @foreach($data->request_other as $key => $item)--}}
-{{--                        <li class="list-group-item">--}}
-{{--                            {{ $item }}--}}
-{{--                        </li>--}}
-{{--                    @endforeach--}}
-{{--                </ul>--}}
-{{--            </div>--}}
-
             <p>
                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    Button with data-bs-target
+                    Show log other
                 </button>
+                <span id="passwordHelpInline" class="form-text">
+                  For the first time, click twice.
+                </span>
             </p>
             <div class="collapse" id="collapseExample">
                 <ul class="list-group">
